@@ -47,10 +47,11 @@
 /* USER CODE BEGIN Variables */
 extern IWDG_HandleTypeDef hiwdg;
 extern uint8_t Can_Callback_Message[30];
-extern uint16_t Sensor_Speed, Sensor_Count, Sensor_Current, Sensor_Position, Sensor_Row, Stop_Count;
+extern int16_t Sensor_Speed, Sensor_Count, Sensor_Current, Sensor_Position, Sensor_Row, Stop_Position;
 extern uint8_t test_string[];
 extern uint64_t general_time;
 extern uint8_t global_flag;
+extern PIDParDef pid2;
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId DEBUGHandle;
@@ -133,19 +134,36 @@ void StartDefaultTask(void const * argument)
 {
   /* USER CODE BEGIN StartDefaultTask */
 int count = 0;
+int temp_speed = -700;
   /* Infinite loop */
   for(;;)
   {
       HAL_IWDG_Refresh(&hiwdg);
-      //Motor1_Current(4000);
-      count++;
-      if(count < 1400) {
-          Motor1_Speed(200);
-          hs_UART_Transmit(&huart1, (float)count);
+
+      if(count < 900) {
+          Motor1_Speed(temp_speed);
+          count++;
       }
-      else{
-          Motor1_Current(1100);
+      else if(count == 900){
+          global_flag = 1;
+          count++;
       }
+      if(global_flag == 1){
+          Stop_Position = Sensor_Position;
+          global_flag = 2;
+      }
+
+      if(global_flag == 2){
+          Bark(Stop_Position);
+
+          if(HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_13) == GPIO_PIN_RESET)
+          {
+              temp_speed = -temp_speed;
+              count = 0;
+              global_flag = 0;
+          }
+      }
+      hs_UART_Transmit(&huart1,pid2.output);
       osDelay(1);
   }
   /* USER CODE END StartDefaultTask */

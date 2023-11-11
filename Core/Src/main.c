@@ -20,7 +20,6 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "can.h"
-#include "dma.h"
 #include "iwdg.h"
 #include "tim.h"
 #include "usart.h"
@@ -53,7 +52,7 @@
 extern IWDG_HandleTypeDef hiwdg;
 uint8_t global_flag = 0;
 uint8_t Can_Callback_Message[30];
-uint16_t Sensor_Speed, Sensor_Count, Sensor_Current, last_Sensor_Count, next_Sensor_Count, Sensor_Position, Sensor_Row;
+int32_t Sensor_Speed, Sensor_Count, Sensor_Current, last_Sensor_Count, Sensor_Position, Sensor_Row, pos_t, Stop_Position;
 uint8_t test_string[] = {0x13, 0x88, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 uint64_t general_time;
 /* USER CODE END PV */
@@ -110,7 +109,6 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
-  MX_DMA_Init();
   MX_CAN1_Init();
   MX_USART1_UART_Init();
   MX_TIM3_Init();
@@ -127,6 +125,9 @@ int main(void)
         Error_Handler();
     }
     Can_Start(&hcan1);
+    while(HAL_GPIO_ReadPin(GPIOF, GPIO_PIN_13) == GPIO_PIN_SET){
+        HAL_IWDG_Refresh(&hiwdg);
+    }
     HAL_TIM_Base_Start_IT(&htim3);
   /* USER CODE END 2 */
 

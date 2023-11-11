@@ -24,7 +24,7 @@
 uint8_t clear_flag;
 extern uint8_t global_flag;
 extern uint8_t Can_Callback_Message[30];
-extern uint16_t Sensor_Speed, Sensor_Count, Sensor_Current, Sensor_Position, last_Sensor_Count, Sensor_Row;
+extern int16_t Sensor_Speed, Sensor_Count, Sensor_Current, Sensor_Position, last_Sensor_Count, Sensor_Row, pos_t;
 /* USER CODE END 0 */
 
 CAN_HandleTypeDef hcan1;
@@ -127,19 +127,22 @@ CAN_RxHeaderTypeDef	RxHeader;
 
 void Motor1_Data_Process(void)
 {
-    Sensor_Current = (uint32_t)((Can_Callback_Message[4] << 8) | Can_Callback_Message[5]);
+    float pos_f;
+    Sensor_Current = (int16_t)((Can_Callback_Message[4] << 8) | Can_Callback_Message[5]);
     Sensor_Current = Sensor_Current>30000 ? 65535 - Sensor_Current : Sensor_Current;
-    Sensor_Speed = (uint32_t)((Can_Callback_Message[2] << 8) | Can_Callback_Message[3]);
+    Sensor_Speed = (int16_t)((Can_Callback_Message[2] << 8) | Can_Callback_Message[3]);
     Sensor_Speed = Sensor_Speed>30000? 65535 - Sensor_Speed : Sensor_Speed;
-    Sensor_Count = (uint32_t)((Can_Callback_Message[0] << 8) | Can_Callback_Message[1]);
+    Sensor_Count = (int16_t)((Can_Callback_Message[0] << 8) | Can_Callback_Message[1]);
+    pos_f = ((float)Sensor_Count)/8192.f;
     if(last_Sensor_Count - Sensor_Count > 4000){
-        Sensor_Position++;
+        pos_t++;
     }
     if(last_Sensor_Count - Sensor_Count < -4000){
-        Sensor_Position--;
+        pos_t--;
     }
+    Sensor_Position = (int16_t)(((float)pos_t + pos_f)*100.f);
     last_Sensor_Count = Sensor_Count;
-    Sensor_Row = Sensor_Position / 1;
+    //Sensor_Row = Sensor_Position / 1;
 }
 
 uint8_t Can_Transmit(CAN_HandleTypeDef *hcan, uint8_t* message,uint32_t ID)
@@ -161,7 +164,6 @@ uint8_t Can_Transmit(CAN_HandleTypeDef *hcan, uint8_t* message,uint32_t ID)
 void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
 {
     uint8_t rxbuffer[8];
-    global_flag = 1;
     if(hcan->Instance==CAN1) {
         HAL_CAN_GetRxMessage(hcan,CAN_FILTER_FIFO0,&RxHeader,rxbuffer);
         for(int i=0; i<8; i++){

@@ -8,7 +8,7 @@ void Can_Start(CAN_HandleTypeDef *hcan)
     sFilterConfig.FilterMode = CAN_FILTERMODE_IDLIST;
     sFilterConfig.FilterScale = CAN_FILTERSCALE_32BIT;
 
-    sFilterConfig.FilterIdHigh         = 0x201<<5;
+    sFilterConfig.FilterIdHigh         = 0x202<<5;
     sFilterConfig.FilterIdLow          = 0x206<<5;
     sFilterConfig.FilterFIFOAssignment = CAN_RX_FIFO0;
     sFilterConfig.FilterActivation = ENABLE;
