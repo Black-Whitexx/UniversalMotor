@@ -48,7 +48,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-//总全局变量
+//鎬诲叏灞�鍙橀噺
 extern IWDG_HandleTypeDef hiwdg;
 uint8_t global_flag = 0;
 uint8_t Can_Callback_Message[30];

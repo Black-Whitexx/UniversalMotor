@@ -4,9 +4,9 @@
 #include "motor.h"
 extern int16_t Sensor_Speed, Sensor_Current, Sensor_Position, Sensor_Row, Sensor_Count;
 uint16_t EmeStop, Stop_Count;
-PIDParDef pid1={60.f,0.f,0.f,0,0,0,2000,-2000,0, INF};//µçÁ÷»·
-PIDParDef pid2={10.f,0.f,1.f,0,0,0,2000,-2000,0,INF};//ËÙ¶È»·
-PIDParDef pid3={20.f,0.001f,0.f,0,0,0,3000,-3000,800,INF};//Î»ÖÃ»·
+PIDParDef pid1={60.f,0.f,0.f,0,0,0,2000,-2000,0, INF};//ç”µæµç¯
+PIDParDef pid2={10.f,0.f,1.f,0,0,0,2000,-2000,0,INF};//é€Ÿåº¦ç¯
+PIDParDef pid3={20.f,0.001f,0.f,0,0,0,3000,-3000,800,INF};//ä½ç½®ç¯
 float tar_speed, tar_current, tar_position;
 int16_t output;
 uint8_t txbuffer[8];

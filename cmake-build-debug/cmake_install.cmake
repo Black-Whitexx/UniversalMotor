@@ -1,4 +1,4 @@
-# Install script for directory: F:/Personal_Files/Competition/R1_demo
+# Install script for directory: E:/EmbeddedDevelopment/UniversalMotor
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "F:/Personal_Files/Competition/R1_demo/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "E:/EmbeddedDevelopment/UniversalMotor/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
